@@ -30,22 +30,36 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
+          child: CounterWidget(),
         ),
-        floatingActionButton: Consumer(
-          builder: (context, ref, child) {
-            final counter = ref.read(counterProvider);
-            return FloatingActionButton(
-              onPressed: () {
-                counter.increment();
-              },
-              child: Icon(
-                Icons.add,
-              ),
-            );
-          }
-        ),
+        floatingActionButton: Consumer(builder: (context, ref, child) {
+          final counter = ref.read(counterProvider);
+          return FloatingActionButton(
+            onPressed: () {
+              counter.increment();
+            },
+            child: Icon(
+              Icons.add,
+            ),
+          );
+        }),
       ),
+    );
+  }
+}
+
+class CounterWidget extends ConsumerWidget {
+  const CounterWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final counter = ref.read(counterProvider);
+    final counter2 = ref.read(counter2Provider);
+    return ElevatedButton(
+      onPressed: () {
+        counter.increment();
+      },
+      child: Text('증가시키기'),
     );
   }
 }
