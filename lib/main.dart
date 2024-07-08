@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wabiz_riverpod/provider/counter_provider.dart';
 
+import 'provider/counter_consumer_widget.dart';
+
 void main() {
   // for dart
   // final container = ProviderContainer();
@@ -30,7 +32,8 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: CounterWidget(),
+          // child: CounterWidget(),
+          child: CounterStatefulWidget(),
         ),
         floatingActionButton: Consumer(builder: (context, ref, child) {
           final counter = ref.read(counterProvider);
@@ -48,18 +51,40 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class CounterWidget extends ConsumerWidget {
-  const CounterWidget({super.key});
+class CounterStatefulWidget extends ConsumerStatefulWidget {
+  const CounterStatefulWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final counter = ref.read(counterProvider);
-    final counter2 = ref.read(counter2Provider);
+  ConsumerState<CounterStatefulWidget> createState() =>
+      _CounterStatefulWidgetState();
+}
+
+class _CounterStatefulWidgetState extends ConsumerState<CounterStatefulWidget> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // Error
+    // ref.read(counterProvider);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
+        final counter = ref.read(counterProvider);
         counter.increment();
+        setState(() {
+
+        });
       },
-      child: Text('증가시키기'),
+      child: Text('증가시키기 ${ref.read(counterProvider).counterValue}'),
     );
   }
 }
