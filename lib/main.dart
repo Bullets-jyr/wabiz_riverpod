@@ -4,6 +4,7 @@ import 'package:wabiz_riverpod/future_provider/simple_future_provider.dart';
 import 'package:wabiz_riverpod/provider/counter_provider.dart';
 import 'package:wabiz_riverpod/state_notifier_provider/my_state_notifier_provider.dart';
 import 'package:wabiz_riverpod/state_provider/my_state_provider.dart';
+import 'package:wabiz_riverpod/stream_provider/simple_stream_provider.dart';
 
 import 'provider/counter_cfw.dart';
 import 'provider/counter_consumer_widget.dart';
@@ -70,31 +71,61 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MyFutureProviderWidget(),
+      // body: Center(
+      //   child: MyStreamProviderWidget(),
+      // ),
+      body: Consumer(
+        builder: (BuildContext context, WidgetRef ref, Widget? child) {
+          ref.listen(
+            simpleStreamProvider,
+            (previous, next) {
+              print('$previous : $next');
+            },
+          );
+          return StreamBuilder(
+            stream: ref.watch(simpleStreamProvider.future).asStream(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Center(
+                  child: Text(
+                    '${snapshot.data}',
+                  ),
+                );
+              }
+              return Text('로딩중');
+            },
+          );
+        },
+      ),
     );
   }
 }
 
-class MyFutureProviderWidget extends ConsumerWidget {
-  const MyFutureProviderWidget({super.key});
+class MyStreamProviderWidget extends ConsumerWidget {
+  const MyStreamProviderWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final intValue = ref.watch(simpleIntFutureProvider);
-    return intValue.when(
-      data: (data) {
-        return Center(
-          child: Text('$data'),
-        );
-      },
-      error: (error, trace) {
-        return Text('$error');
-      },
-      loading: () {
-        return Center(
-          child: Text('로딩중'),
-        );
-      },
-    );
+    final counter = ref.watch(simpleStreamProvider);
+    return switch (counter) {
+      AsyncData(:final value) => Text('$value'),
+      AsyncError(:final error) => Text('$error'),
+      _ => Text('로딩중'),
+    };
+    // return counter.when(
+    //   data: (data) => Center(
+    //     child: Text(
+    //       '$data',
+    //     ),
+    //   ),
+    //   error: (error, trace) {
+    //     return Center(
+    //       child: Text(
+    //         '$error',
+    //       ),
+    //     );
+    //   },
+    //   loading: () => Text('로딩중'),
+    // );
   }
 }
