@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wabiz_riverpod/change_notifier_provider/my_change_notifier_provider.dart';
 import 'package:wabiz_riverpod/future_provider/simple_future_provider.dart';
 import 'package:wabiz_riverpod/provider/counter_provider.dart';
 import 'package:wabiz_riverpod/state_notifier_provider/my_state_notifier_provider.dart';
@@ -74,28 +75,49 @@ class MyHomePage extends StatelessWidget {
       // body: Center(
       //   child: MyStreamProviderWidget(),
       // ),
-      body: Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          ref.listen(
-            simpleStreamProvider,
-            (previous, next) {
-              print('$previous : $next');
-            },
-          );
-          return StreamBuilder(
-            stream: ref.watch(simpleStreamProvider.future).asStream(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Center(
-                  child: Text(
-                    '${snapshot.data}',
-                  ),
-                );
-              }
-              return Text('로딩중');
-            },
-          );
-        },
+      body: Center(
+        child: Consumer(
+          builder: (BuildContext context, WidgetRef ref, Widget? child) {
+            final count = ref.watch(counterChangeNotifierProvider).counterValue;
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('카운터 값: $count'),
+                ElevatedButton(
+                  onPressed: () {
+                    ref.read(counterChangeNotifierProvider.notifier).increment();
+                  },
+                  child: Text('증가'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    ref.read(counterChangeNotifierProvider.notifier).decrement();
+                  },
+                  child: Text('감소'),
+                ),
+              ],
+            );
+            // ref.listen(
+            //   simpleStreamProvider,
+            //   (previous, next) {
+            //     print('$previous : $next');
+            //   },
+            // );
+            // return StreamBuilder(
+            //   stream: ref.watch(simpleStreamProvider.future).asStream(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       return Center(
+            //         child: Text(
+            //           '${snapshot.data}',
+            //         ),
+            //       );
+            //     }
+            //     return Text('로딩중');
+            //   },
+            // );
+          },
+        ),
       ),
     );
   }
