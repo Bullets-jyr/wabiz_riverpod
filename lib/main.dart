@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wabiz_riverpod/provider/counter_provider.dart';
 
+import 'provider/counter_cfw.dart';
 import 'provider/counter_consumer_widget.dart';
 
 void main() {
@@ -33,7 +34,26 @@ class MainApp extends StatelessWidget {
       home: Scaffold(
         body: Center(
           // child: CounterWidget(),
-          child: CounterStatefulWidget(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CounterWidget(),
+              CounterStatefulWidget(),
+              Consumer(
+                builder: (context, ref, child) {
+                  final counter = ref.read(counterProvider);
+                  return ElevatedButton(
+                    onPressed: () {
+                      counter.decrement();
+                    },
+                    child: Text(
+                      '감소',
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
         floatingActionButton: Consumer(builder: (context, ref, child) {
           final counter = ref.read(counterProvider);
@@ -47,44 +67,6 @@ class MainApp extends StatelessWidget {
           );
         }),
       ),
-    );
-  }
-}
-
-class CounterStatefulWidget extends ConsumerStatefulWidget {
-  const CounterStatefulWidget({super.key});
-
-  @override
-  ConsumerState<CounterStatefulWidget> createState() =>
-      _CounterStatefulWidgetState();
-}
-
-class _CounterStatefulWidgetState extends ConsumerState<CounterStatefulWidget> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // Error
-    // ref.read(counterProvider);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        final counter = ref.read(counterProvider);
-        counter.increment();
-        setState(() {
-
-        });
-      },
-      child: Text('증가시키기 ${ref.read(counterProvider).counterValue}'),
     );
   }
 }
