@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wabiz_riverpod/provider/counter_provider.dart';
+import 'package:wabiz_riverpod/state_notifier_provider/my_state_notifier_provider.dart';
 import 'package:wabiz_riverpod/state_provider/my_state_provider.dart';
 
 import 'provider/counter_cfw.dart';
@@ -35,7 +36,8 @@ class MainApp extends StatelessWidget {
       home: Scaffold(
         body: Consumer(
           builder: (context, ref, child) {
-            final counter = ref.watch(counterStateProvider);
+            // final counter = ref.watch(counterStateProvider);
+            final counter = ref.watch(counterStateNotifierProvider);
             return Center(
               child: Text(
                 '$counter',
@@ -47,9 +49,8 @@ class MainApp extends StatelessWidget {
           final counter = ref.read(counterProvider);
           return FloatingActionButton(
             onPressed: () {
-              ref
-                  .read(counterStateProvider.notifier)
-                  .update((state) => state += 1);
+              // ref.read(counterStateProvider.notifier).update((state) => state += 1);
+              ref.read(counterStateNotifierProvider.notifier).increment();
             },
             child: Icon(
               Icons.add,
